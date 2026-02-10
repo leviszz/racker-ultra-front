@@ -17,10 +17,24 @@ h1 {
     padding: 15px;
     text-align: center;
     box-shadow: 0 0 15px yellow;
+    width: 80%;
+    margin: 30px auto 10px auto;
+}
+
+.alerta {
+    background: #ff2b2b;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    width: fit-content;
+    margin: 0 auto 30px auto;
+    border-radius: 5px;
+    border: 2px solid #b80000;
 }
 
 table {
-    margin: 40px auto;
+    margin: 0 auto 60px auto;
     border-collapse: separate;
     border-spacing: 8px;
 }
@@ -29,72 +43,102 @@ th, td {
     border: 2px solid yellow;
     padding: 12px;
     text-align: center;
+    min-width: 130px;
 }
 
 th {
     color: yellow;
+}
+
+.sinal {
+    font-weight: bold;
+}
+
+.perigoso {
+    color: #ff3131;
+    font-weight: bold;
+}
+
+.fraco {
+    color: #39ff14;
+    font-weight: bold;
+}
+
+.pilha {
+    color: yellow;
+    font-weight: bold;
+}
+
+a {
+    color: #00bfff;
+    font-weight: bold;
+    text-decoration: none;
 }
 </style>
 </head>
 
 <body>
 
-<h1>TRADER CRIPTO BOSS – RACKER ULTRA (TURBO)</h1>
+<h1>TRADER CRIPTO BOSS - RACKER ULTRA (TURBO)</h1>
+
+<div class="alerta">
+⚠️ FAZER 1 REQUISIÇÃO A CADA 5 MINUTOS PARA QUE NÃO SOFRA BLOQUEIO DA FERRAMENTA
+</div>
 
 <table>
 <thead>
 <tr>
     <th>Par</th>
-    <th>Efeito</th>
-    <th>TF</th>
-    <th>Perigo</th>
-    <th>Pilha</th>
-    <th>Variação</th>
+    <th>Sinal Técnico</th>
+    <th>Timeframe</th>
+    <th>Suporte</th>
+    <th>Candle Pilha</th>
+    <th>Variação 24h</th>
+    <th>URL BINANCE</th>
 </tr>
 </thead>
+
 <tbody id="tabela">
 <tr>
-    <td colspan="6">Aguardando dados...</td>
+    <td colspan="7">Aguardando dados...</td>
 </tr>
 </tbody>
 </table>
 
 <script>
-console.log("JS carregado");
-
 fetch("https://racker-ultra-api.onrender.com/scan")
-.then(res => {
-    console.log("Resposta recebida");
-    return res.json();
-})
+.then(res => res.json())
 .then(data => {
-    console.log("JSON:", data);
-
     const tbody = document.getElementById("tabela");
     tbody.innerHTML = "";
 
     if (!data.resultados || data.resultados.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='6'>Nenhum sinal</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='7'>Nenhum sinal encontrado</td></tr>";
         return;
     }
 
     data.resultados.forEach(r => {
         const tr = document.createElement("tr");
+
+        const classeSuporte = r.suporte.includes("PERIGOSO") ? "perigoso" : "fraco";
+
         tr.innerHTML = `
-            <td>${r.par}</td>
-            <td>${r.efeito}</td>
+            <td><b>${r.par}</b></td>
+            <td class="sinal">${r.sinal}</td>
             <td>${r.tf}</td>
-            <td>${r.perigo}</td>
-            <td>${r.pilha}</td>
+            <td class="${classeSuporte}">⚠️ ${r.suporte}</td>
+            <td class="pilha">${r.pilha}</td>
             <td>${r.variacao}</td>
+            <td><a href="${r.binance}" target="_blank">ABRIR</a></td>
         `;
+
         tbody.appendChild(tr);
     });
 })
 .catch(err => {
-    console.error("ERRO:", err);
     document.getElementById("tabela").innerHTML =
-        "<tr><td colspan='6'>Erro ao buscar API</td></tr>";
+        "<tr><td colspan='7'>Erro ao conectar à API</td></tr>";
+    console.error(err);
 });
 </script>
 
